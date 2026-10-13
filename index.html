@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Umbral Launcher</title>
+  <meta name="description" content="A free, unofficial launcher for Minecraft: Java Edition with Microsoft sign-in, separate profiles, mods and automatic world backups.">
+  <style>
+    @font-face { font-family: "Pixelify Sans"; font-weight: 400; src: url(pixelify-sans-latin-400-normal.woff2) format("woff2"); }
+    @font-face { font-family: "Pixelify Sans"; font-weight: 700; src: url(pixelify-sans-latin-700-normal.woff2) format("woff2"); }
+    :root { --line: #000; --edge: #5a5a5a; --muted: #c9c9c9; --grass: #3c8527; --grass-light: #5db53f; --grass-dark: #26591a; --stone: #6e6e6e; --stone-light: #a8a8a8; --stone-dark: #4a4a4a; --warn: #ffd83d; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #fff; font: 17px/1.55 "Segoe UI", system-ui, sans-serif; background: linear-gradient(#000000b8, #000000b8), url(tierra.png) 0 0 / 64px; image-rendering: pixelated; }
+    h1, h2, h3, .btn, .lang button { font-family: "Pixelify Sans", "Segoe UI", sans-serif; font-variant-ligatures: none; }
+    header { padding: 56px 20px 40px; text-align: center; background: url(pasto.png) 0 0 / 96px; border-bottom: 4px solid var(--line); position: relative; }
+    header::before { content: ""; position: absolute; inset: 0; background: linear-gradient(#0000004d, #000000b3); }
+    header > * { position: relative; }
+    h1 { margin: 0; font-size: clamp(40px, 8vw, 68px); text-shadow: 4px 4px #000; }
+    .tagline { margin: 10px auto 0; max-width: 620px; font-size: 20px; text-shadow: 2px 2px #000; }
+    .badge { display: inline-block; margin-top: 18px; padding: 4px 12px; background: #000; border: 2px solid var(--warn); color: var(--warn); font-size: 15px; }
+    .lang { position: absolute; top: 14px; right: 16px; display: flex; gap: 6px; }
+    .lang button, .btn { color: #fff; font-size: 16px; padding: 6px 12px; cursor: pointer; text-decoration: none; text-shadow: 2px 2px #3f3f3f; background: var(--stone); border: 2px solid var(--line); box-shadow: inset 2px 2px var(--stone-light), inset -2px -2px var(--stone-dark); }
+    .lang button[aria-pressed=true], .btn.primary { background: var(--grass); box-shadow: inset 2px 2px var(--grass-light), inset -2px -2px var(--grass-dark); }
+    .lang button:focus-visible, .btn:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+    main { max-width: 940px; margin: 0 auto; padding: 32px 20px 20px; display: flex; flex-direction: column; gap: 22px; }
+    section { background: #000000a8; border: 2px solid var(--line); box-shadow: inset 0 0 0 2px var(--edge); padding: 22px 24px; }
+    h2 { margin: 0 0 12px; font-size: 26px; font-weight: 400; color: var(--warn); text-shadow: 2px 2px #3f3f3f; }
+    h3 { margin: 0 0 4px; font-size: 19px; font-weight: 400; }
+    p { margin: 0 0 10px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: #8ab4ff; }
+    .muted { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+    .grid > div { padding: 12px 14px; background: #00000066; border: 2px solid var(--line); }
+    .grid p { color: var(--muted); font-size: 15px; }
+    ul { margin: 0; padding-left: 22px; }
+    li { margin-bottom: 6px; }
+    figure { margin: 0; }
+    .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .shots img { display: block; width: 100%; height: auto; border: 2px solid var(--line); image-rendering: auto; }
+    figcaption { margin-top: 6px; font-size: 14px; color: var(--muted); }
+    .legal { border-color: var(--warn); box-shadow: inset 0 0 0 2px var(--warn); }
+    .legal strong { display: block; font-size: 18px; margin-bottom: 6px; }
+    footer { max-width: 940px; margin: 0 auto; padding: 8px 20px 40px; font-size: 14px; color: #9a9a9a; }
+    /* Only the active language is shown; !important so it also beats component display rules. */
+    html:not(.es) [lang=es], html.es [lang=en] { display: none !important; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="lang">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="es" aria-pressed="false">Español</button>
+    </div>
+    <h1>Umbral Launcher</h1>
+    <p class="tagline" lang="en">A free, unofficial launcher for Minecraft: Java Edition, made to be easy to understand.</p>
+    <p class="tagline" lang="es">Un launcher gratuito y no oficial para Minecraft: Java Edition, hecho para que se entienda.</p>
+    <span class="badge" lang="en">In development — no public download yet</span>
+    <span class="badge" lang="es">En desarrollo — todavía sin descarga pública</span>
+  </header>
+
+  <main>
+    <section class="legal">
+      <strong lang="en">NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</strong>
+      <strong lang="es">NO ES UN PRODUCTO OFICIAL DE MINECRAFT. NO ESTÁ APROBADO POR MOJANG NI MICROSOFT, NI ASOCIADO CON ELLOS.</strong>
+      <p class="muted" lang="en">Umbral Launcher is an independent, non-commercial hobby project. You need to own Minecraft: Java Edition to play. The launcher does not include or redistribute any game files: they are downloaded from Mojang's official servers.</p>
+      <p class="muted" lang="es">Umbral Launcher es un proyecto personal, independiente y sin fines comerciales. Para jugar necesitás tener comprado Minecraft: Java Edition. El launcher no incluye ni redistribuye archivos del juego: se descargan de los servidores oficiales de Mojang.</p>
+    </section>
+
+    <section>
+      <h2 lang="en">What it does</h2>
+      <h2 lang="es">Qué hace</h2>
+      <div class="grid">
+        <div>
+          <h3 lang="en">Separate profiles</h3><h3 lang="es">Perfiles separados</h3>
+          <p lang="en">Each profile has its own Minecraft version, mods and worlds, so a modded game never breaks a vanilla one.</p>
+          <p lang="es">Cada perfil tiene su versión de Minecraft, sus mods y sus mundos, para que un juego con mods no rompa el normal.</p>
+        </div>
+        <div>
+          <h3 lang="en">Everything installs itself</h3><h3 lang="es">Todo se instala solo</h3>
+          <p lang="en">Downloads the game, the right Java version, and Fabric or NeoForge when a profile uses mods.</p>
+          <p lang="es">Descarga el juego, la versión correcta de Java, y Fabric o NeoForge cuando el perfil usa mods.</p>
+        </div>
+        <div>
+          <h3 lang="en">Mods from Modrinth</h3><h3 lang="es">Mods desde Modrinth</h3>
+          <p lang="en">Search shows only mods compatible with the profile, and required dependencies are installed with them.</p>
+          <p lang="es">La búsqueda muestra solo mods compatibles con el perfil, y las dependencias necesarias se instalan con ellos.</p>
+        </div>
+        <div>
+          <h3 lang="en">Automatic world backups</h3><h3 lang="es">Copias automáticas de mundos</h3>
+          <p lang="en">Worlds you played are backed up when the game closes. Restoring never overwrites the current world.</p>
+          <p lang="es">Al cerrar el juego se guarda una copia de los mundos jugados. Restaurar nunca pisa el mundo actual.</p>
+        </div>
+        <div>
+          <h3 lang="en">Bring your existing game</h3><h3 lang="es">Traé lo que ya tenías</h3>
+          <p lang="en">Copies worlds, mods and options from the official launcher or Prism into a new profile, leaving the originals untouched.</p>
+          <p lang="es">Copia mundos, mods y opciones del launcher oficial o de Prism a un perfil nuevo, sin tocar los originales.</p>
+        </div>
+        <div>
+          <h3 lang="en">Plain-language crash help</h3><h3 lang="es">Errores explicados</h3>
+          <p lang="en">When the game crashes, known causes such as a missing dependency are explained and can be fixed in one click.</p>
+          <p lang="es">Si el juego se cierra, las causas conocidas (como un mod que falta) se explican y se arreglan con un clic.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 lang="en">How sign-in works</h2>
+      <h2 lang="es">Cómo funciona el inicio de sesión</h2>
+      <ul lang="en">
+        <li>Sign-in uses the standard Microsoft OAuth 2.0 authorization code flow with PKCE, in your own web browser.</li>
+        <li>Your password is typed on Microsoft's page only. The launcher never sees it.</li>
+        <li>The launcher checks that the account owns Minecraft: Java Edition before allowing play. There is no offline or cracked mode.</li>
+        <li>The session token is stored encrypted on your computer using the operating system's protected storage, and is removed when you sign out.</li>
+        <li>No account data is sent anywhere other than Microsoft, Xbox Live and Minecraft Services.</li>
+      </ul>
+      <ul lang="es">
+        <li>El inicio de sesión usa el flujo estándar de Microsoft (OAuth 2.0 con código de autorización y PKCE), en tu propio navegador.</li>
+        <li>La contraseña se escribe únicamente en la página de Microsoft. El launcher nunca la ve.</li>
+        <li>El launcher comprueba que la cuenta tenga Minecraft: Java Edition antes de dejar jugar. No hay modo sin conexión ni modo pirata.</li>
+        <li>El permiso de sesión se guarda cifrado en tu computadora con el almacenamiento protegido del sistema, y se borra al cerrar sesión.</li>
+        <li>Los datos de la cuenta no se envían a ningún lugar que no sea Microsoft, Xbox Live y Minecraft Services.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 lang="en">Screenshots</h2>
+      <h2 lang="es">Capturas</h2>
+      <p class="muted" lang="en">The interface is currently in Spanish. The blocky look uses the project's own textures and an open-licensed font; no Mojang assets are used.</p>
+      <p class="muted" lang="es">El estilo de bloques usa texturas propias del proyecto y una tipografía de licencia abierta; no se usan recursos de Mojang.</p>
+      <div class="shots">
+        <figure><img src="inicio.png" width="1104" height="681" alt="Home screen with a three-step getting started list: sign in, create a profile, play.">
+          <figcaption lang="en">Home: three first steps</figcaption><figcaption lang="es">Inicio: tres primeros pasos</figcaption></figure>
+        <figure><img src="sesion.png" width="1104" height="681" alt="Sign-in dialog listing how the Microsoft sign-in keeps the password out of the launcher.">
+          <figcaption lang="en">Sign-in explained before it starts</figcaption><figcaption lang="es">El inicio de sesión, explicado antes de empezar</figcaption></figure>
+        <figure><img src="perfil.png" width="1104" height="681" alt="New profile dialog asking for a name, a Minecraft version and whether to use mods.">
+          <figcaption lang="en">Creating a profile</figcaption><figcaption lang="es">Crear un perfil</figcaption></figure>
+      </div>
+    </section>
+
+    <section>
+      <h2 lang="en">Open source</h2>
+      <h2 lang="es">Código abierto</h2>
+      <p lang="en">The full source code is public on <a href="https://github.com/lautaroleuchuk6-cmd/umbral-launcher">GitHub</a>. It is built with Electron and TypeScript, and uses the MIT-licensed <a href="https://github.com/Voxelum/minecraft-launcher-core-node">@xmcl</a> libraries to install and start the game.</p>
+      <p lang="es">Todo el código es público en <a href="https://github.com/lautaroleuchuk6-cmd/umbral-launcher">GitHub</a>. Está hecho con Electron y TypeScript, y usa las librerías <a href="https://github.com/Voxelum/minecraft-launcher-core-node">@xmcl</a> (licencia MIT) para instalar e iniciar el juego.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span lang="en">Minecraft is a trademark of Mojang Synergies AB. This project is not affiliated with Mojang or Microsoft.</span>
+    <span lang="es">Minecraft es una marca de Mojang Synergies AB. Este proyecto no está afiliado a Mojang ni a Microsoft.</span>
+  </footer>
+
+  <script>
+    const buttons = document.querySelectorAll('.lang button')
+    function setLanguage(lang) {
+      document.documentElement.classList.toggle('es', lang === 'es')
+      document.documentElement.lang = lang
+      for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.lang === lang))
+    }
+    for (const b of buttons) b.addEventListener('click', () => setLanguage(b.dataset.lang))
+    if (navigator.language.startsWith('es')) setLanguage('es')
+  </script>
+</body>
+</html>
