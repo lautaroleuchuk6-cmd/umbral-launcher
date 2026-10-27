@@ -4,189 +4,580 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Umbral Launcher</title>
-  <meta name="description" content="A free, unofficial launcher for Minecraft: Java Edition with Microsoft sign-in, separate profiles, mods and automatic world backups.">
+  <meta name="description" content="A free, unofficial launcher for Minecraft: Java Edition with Microsoft sign-in, separate profiles, mods, shaders and automatic world backups.">
+  <meta name="theme-color" content="#07060d">
   <style>
     @font-face { font-family: "Pixelify Sans"; font-weight: 400; src: url(pixelify-sans-latin-400-normal.woff2) format("woff2"); }
-    .download { margin-top: 22px; }
-    .download .small { margin: 10px 0 0; font-size: 15px; color: var(--muted); text-shadow: 2px 2px #000; }
-    .btn.big { display: inline-block; font-size: 24px; padding: 14px 34px; }
-    ol { margin: 0 0 12px; padding-left: 22px; }
-    code { background: #000; padding: 1px 6px; border: 1px solid var(--edge); }
     @font-face { font-family: "Pixelify Sans"; font-weight: 700; src: url(pixelify-sans-latin-700-normal.woff2) format("woff2"); }
-    :root { --line: #000; --edge: #5a5a5a; --muted: #c9c9c9; --grass: #3c8527; --grass-light: #5db53f; --grass-dark: #26591a; --stone: #6e6e6e; --stone-light: #a8a8a8; --stone-dark: #4a4a4a; --warn: #ffd83d; }
+    @property --angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
+    :root {
+      --bg: #07060d;
+      --ink: #f2f0ff;
+      --muted: #a9a3c4;
+      --cyan: #3ff7ff;
+      --violet: #9b5cff;
+      --lime: #7cff4f;
+      --grass: #3c8527;
+      --grass-light: #5db53f;
+      --grass-dark: #26591a;
+      --panel: rgba(16, 12, 30, .88);
+      --line: rgba(155, 92, 255, .35);
+      --pixel: "Pixelify Sans", "Segoe UI", system-ui, sans-serif;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; color: #fff; font: 17px/1.55 "Segoe UI", system-ui, sans-serif; background: linear-gradient(#000000b8, #000000b8), url(tierra.png) 0 0 / 64px; image-rendering: pixelated; }
-    h1, h2, h3, .btn, .lang button { font-family: "Pixelify Sans", "Segoe UI", sans-serif; font-variant-ligatures: none; }
-    header { padding: 56px 20px 40px; text-align: center; background: url(pasto.png) 0 0 / 96px; border-bottom: 4px solid var(--line); position: relative; }
-    header::before { content: ""; position: absolute; inset: 0; background: linear-gradient(#0000004d, #000000b3); }
-    header > * { position: relative; }
-    h1 { margin: 0; font-size: clamp(40px, 8vw, 68px); text-shadow: 4px 4px #000; }
-    .tagline { margin: 10px auto 0; max-width: 620px; font-size: 20px; text-shadow: 2px 2px #000; }
-    .badge { display: inline-block; margin-top: 18px; padding: 4px 12px; background: #000; border: 2px solid var(--warn); color: var(--warn); font-size: 15px; }
-    .lang { position: absolute; top: 14px; right: 16px; display: flex; gap: 6px; }
-    .lang button, .btn { color: #fff; font-size: 16px; padding: 6px 12px; cursor: pointer; text-decoration: none; text-shadow: 2px 2px #3f3f3f; background: var(--stone); border: 2px solid var(--line); box-shadow: inset 2px 2px var(--stone-light), inset -2px -2px var(--stone-dark); }
-    .lang button[aria-pressed=true], .btn.primary { background: var(--grass); box-shadow: inset 2px 2px var(--grass-light), inset -2px -2px var(--grass-dark); }
-    .lang button:focus-visible, .btn:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
-    main { max-width: 940px; margin: 0 auto; padding: 32px 20px 20px; display: flex; flex-direction: column; gap: 22px; }
-    section { background: #000000a8; border: 2px solid var(--line); box-shadow: inset 0 0 0 2px var(--edge); padding: 22px 24px; }
-    h2 { margin: 0 0 12px; font-size: 26px; font-weight: 400; color: var(--warn); text-shadow: 2px 2px #3f3f3f; }
-    h3 { margin: 0 0 4px; font-size: 19px; font-weight: 400; }
-    p { margin: 0 0 10px; }
-    p:last-child { margin-bottom: 0; }
-    a { color: #8ab4ff; }
-    .muted { color: var(--muted); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
-    .grid > div { padding: 12px 14px; background: #00000066; border: 2px solid var(--line); }
-    .grid p { color: var(--muted); font-size: 15px; }
-    ul { margin: 0; padding-left: 22px; }
-    li { margin-bottom: 6px; }
-    figure { margin: 0; }
-    .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-    .shots img { display: block; width: 100%; height: auto; border: 2px solid var(--line); image-rendering: auto; }
-    figcaption { margin-top: 6px; font-size: 14px; color: var(--muted); }
-    .legal { border-color: var(--warn); box-shadow: inset 0 0 0 2px var(--warn); }
-    .legal strong { display: block; font-size: 18px; margin-bottom: 6px; }
-    footer { max-width: 940px; margin: 0 auto; padding: 8px 20px 40px; font-size: 14px; color: #9a9a9a; }
-    /* Only the active language is shown; !important so it also beats component display rules. */
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--bg); font: 17px/1.6 "Segoe UI", system-ui, sans-serif; overflow-x: hidden; }
+    h1, h2, h3, .pixel, .btn, nav a, .lang button { font-family: var(--pixel); font-variant-ligatures: none; }
+    a { color: var(--cyan); }
+    img { image-rendering: auto; }
+    code { font: 14px Consolas, monospace; background: #000; padding: 2px 7px; border: 1px solid var(--line); }
     html:not(.es) [lang=es], html.es [lang=en] { display: none !important; }
+
+    /* ---------- background: pixel sky, neon floor, scroll bar ---------- */
+    #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -3; image-rendering: pixelated; }
+    .floor { position: fixed; left: -50%; right: -50%; bottom: -10vh; height: 60vh; z-index: -2; pointer-events: none;
+      background:
+        repeating-linear-gradient(90deg, rgba(63, 247, 255, .45) 0 2px, transparent 2px 64px),
+        repeating-linear-gradient(0deg, rgba(155, 92, 255, .45) 0 2px, transparent 2px 64px);
+      transform: perspective(420px) rotateX(64deg); transform-origin: 50% 100%;
+      -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 75%); mask-image: linear-gradient(to top, #000 10%, transparent 75%);
+      animation: floor 4s linear infinite; }
+    @keyframes floor { to { background-position: 0 64px, 0 64px; } }
+    #xp { position: fixed; top: 0; left: 0; height: 6px; width: 100%; z-index: 50; background: #0c1a08; border-bottom: 2px solid #000; }
+    #xp i { display: block; height: 100%; width: calc(var(--p, 0) * 100%); background: var(--lime); box-shadow: 0 0 12px var(--lime), inset 0 -2px #3fbf2f; }
+
+    /* ---------- top bar ---------- */
+    .topbar { position: sticky; top: 6px; z-index: 40; display: flex; align-items: center; gap: 18px; padding: 12px clamp(16px, 4vw, 48px);
+      background: linear-gradient(rgba(7, 6, 13, .85), rgba(7, 6, 13, .55)); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: var(--pixel); font-size: 22px; letter-spacing: 2px; }
+    .brand img { width: 30px; height: 30px; image-rendering: pixelated; filter: drop-shadow(0 0 8px rgba(124, 255, 79, .6)); }
+    nav { display: flex; gap: 18px; margin-left: auto; }
+    nav a { color: var(--muted); text-decoration: none; font-size: 15px; }
+    nav a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+    .lang { display: flex; border: 2px solid #000; }
+    .lang button { color: var(--muted); background: #15112a; border: 0; padding: 4px 10px; font-size: 14px; cursor: pointer; }
+    .lang button[aria-pressed=true] { color: #fff; background: var(--violet); }
+
+    /* ---------- buttons ---------- */
+    .btn { position: relative; display: inline-flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; cursor: pointer; font-size: 20px;
+      padding: 14px 28px; border: 3px solid #000; background: var(--grass); text-shadow: 2px 2px #1d3b12;
+      box-shadow: inset 3px 3px var(--grass-light), inset -3px -3px var(--grass-dark), 0 0 0 0 rgba(124, 255, 79, .5), 0 10px 30px rgba(124, 255, 79, .25);
+      transition: transform .15s steps(3), box-shadow .3s; overflow: hidden; }
+    .btn::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent); animation: shine 3.2s steps(16) infinite; }
+    @keyframes shine { 60%, 100% { left: 130%; } }
+    .btn:hover { transform: translateY(-4px); box-shadow: inset 3px 3px var(--grass-light), inset -3px -3px var(--grass-dark), 0 0 0 4px rgba(124, 255, 79, .35), 0 16px 40px rgba(124, 255, 79, .45); }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible, nav a:focus-visible, .lang button:focus-visible, .thumbs button:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+    .btn.ghost { background: rgba(155, 92, 255, .12); text-shadow: none; box-shadow: inset 0 0 0 2px var(--violet), 0 0 20px rgba(155, 92, 255, .25); }
+    .btn.ghost::after { display: none; }
+    .btn.small { font-size: 15px; padding: 8px 14px; border-width: 2px; }
+    .dl-icon { width: 22px; height: 22px; flex: none; }
+
+    /* ---------- hero ---------- */
+    .hero { min-height: calc(100vh - 70px); display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 24px; padding: 40px clamp(16px, 5vw, 72px) 60px; max-width: 1300px; margin: 0 auto; }
+    .chip { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; letter-spacing: 1.5px; color: var(--cyan); padding: 6px 12px; border: 1px solid rgba(63, 247, 255, .45); background: rgba(63, 247, 255, .07); }
+    .chip::before { content: ""; width: 8px; height: 8px; background: var(--lime); box-shadow: 0 0 8px var(--lime); animation: blink 1.4s steps(2) infinite; }
+    @keyframes blink { 50% { opacity: .2; } }
+    h1 { margin: 22px 0 6px; line-height: .9; font-size: clamp(64px, 11vw, 140px); letter-spacing: 4px; }
+    h1 .word { display: flex; }
+    h1 .ch { display: inline-block; color: #fff; text-shadow: 0 6px 0 #2b1a55, 0 0 24px rgba(155, 92, 255, .8); animation: drop .9s steps(9) both, glitch 7s steps(1) infinite; animation-delay: calc(var(--i) * 90ms), calc(2.5s + var(--i) * 140ms); }
+    @keyframes drop { from { transform: translateY(-120px); opacity: 0; } 60% { opacity: 1; } 80% { transform: translateY(10px); } to { transform: none; } }
+    @keyframes glitch { 0%, 96% { transform: none; text-shadow: 0 6px 0 #2b1a55, 0 0 24px rgba(155, 92, 255, .8); } 97% { transform: translate(-3px, 1px); text-shadow: 4px 0 var(--cyan), -4px 0 #ff3fb4; } 98% { transform: translate(3px, -1px); text-shadow: -4px 0 var(--cyan), 4px 0 #ff3fb4; } }
+    .sub-title { font-family: var(--pixel); font-size: clamp(22px, 3.4vw, 40px); letter-spacing: 12px; color: var(--cyan); text-shadow: 0 0 18px rgba(63, 247, 255, .7); animation: fadeup .8s steps(6) .8s both; }
+    .lead { max-width: 560px; color: var(--muted); font-size: 19px; margin: 18px 0 30px; animation: fadeup .8s steps(6) 1s both; }
+    .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; animation: fadeup .8s steps(6) 1.2s both; }
+    .meta { margin-top: 16px; font-size: 14px; color: var(--muted); animation: fadeup .8s steps(6) 1.3s both; }
+    @keyframes fadeup { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+    /* ---------- the portal (CSS 3D blocks) ---------- */
+    .scene { height: min(78vh, 680px); perspective: 1100px; display: grid; place-items: center; position: relative; }
+    .scene::before { content: ""; position: absolute; width: 70%; height: 70%; border-radius: 50%; background: radial-gradient(circle, rgba(155, 92, 255, .45), rgba(63, 247, 255, .12) 45%, transparent 70%); filter: blur(30px); animation: pulse 4s ease-in-out infinite; }
+    @keyframes pulse { 50% { transform: scale(1.12); opacity: .75; } }
+    .world { --s: clamp(38px, 5.2vw, 74px); position: relative; transform-style: preserve-3d;
+      transform: rotateX(calc(-12deg + var(--my, 0) * -10deg)) rotateY(calc(var(--spin, 0deg) + var(--mx, 0) * 22deg)); }
+    .cube { position: absolute; width: var(--s); height: var(--s); transform-style: preserve-3d; left: calc(var(--x) * var(--s)); top: calc(var(--y) * var(--s)); }
+    .cube i { position: absolute; inset: 0; background: var(--side) 0 0 / 100% 100%; image-rendering: pixelated; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .55); }
+    .cube i:nth-child(1) { transform: translateZ(calc(var(--s) / 2)); }
+    .cube i:nth-child(2) { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+    .cube i:nth-child(3) { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); filter: brightness(.75); }
+    .cube i:nth-child(4) { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); filter: brightness(.75); }
+    .cube i:nth-child(5) { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background-image: var(--top, var(--side)); filter: brightness(1.15); }
+    .cube i:nth-child(6) { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); background-image: var(--bottom, var(--side)); filter: brightness(.5); }
+    .frame .cube { --side: url(umbra.png); }
+    .frame .cube i { box-shadow: inset 0 0 0 1px rgba(155, 92, 255, .55), inset 0 0 14px rgba(155, 92, 255, .25); }
+    .frame { position: relative; width: calc(4 * var(--s)); height: calc(5 * var(--s)); transform-style: preserve-3d; animation: assemble 1.4s steps(10) .3s both; }
+    @keyframes assemble { from { transform: translateY(80px) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+    #rift { position: absolute; left: var(--s); top: var(--s); width: calc(2 * var(--s)); height: calc(3 * var(--s)); image-rendering: pixelated;
+      box-shadow: 0 0 40px rgba(155, 92, 255, .9), 0 0 90px rgba(63, 247, 255, .45); transform: translateZ(1px); }
+    .floater { position: absolute; transform-style: preserve-3d; animation: bob var(--t, 6s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+    .floater .cube { position: relative; left: 0; top: 0; animation: turn var(--r, 14s) linear infinite; }
+    @keyframes bob { 50% { translate: 0 -22px; } }
+    @keyframes turn { to { transform: rotateY(360deg) rotateX(20deg); } }
+    .grass { --side: url(pasto.png); --top: url(cesped.png); --bottom: url(tierra.png); }
+    .stone { --side: url(piedra.png); }
+    .ore { --side: url(umbra.png); }
+    .ore i { box-shadow: inset 0 0 0 1px #000, inset 0 0 16px rgba(63, 247, 255, .8) !important; }
+
+    /* ---------- sections ---------- */
+    section { max-width: 1180px; margin: 0 auto; padding: 90px clamp(16px, 4vw, 40px); }
+    .kicker { font-family: var(--pixel); color: var(--lime); letter-spacing: 3px; font-size: 14px; text-transform: uppercase; }
+    h2 { font-size: clamp(32px, 5vw, 56px); line-height: 1.05; margin: 10px 0 18px; text-shadow: 0 4px 0 #2b1a55, 0 0 30px rgba(155, 92, 255, .5); }
+    .intro { color: var(--muted); max-width: 680px; margin: 0 0 40px; }
+
+    .legal { margin: 0 auto; max-width: 1180px; padding: 16px clamp(16px, 4vw, 40px); }
+    .legal div { border: 2px solid rgba(255, 216, 61, .7); background: rgba(255, 216, 61, .06); padding: 14px 18px; box-shadow: 0 0 24px rgba(255, 216, 61, .12); }
+    .legal strong { font-family: var(--pixel); font-weight: 400; color: #ffd83d; letter-spacing: 1px; display: block; }
+    .legal p { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+
+    .ticker { overflow: hidden; border-block: 2px solid #000; background: linear-gradient(90deg, rgba(155, 92, 255, .25), rgba(63, 247, 255, .2)); padding: 0; max-width: none; }
+    .ticker div { display: flex; gap: 48px; width: max-content; padding: 14px 0; animation: ticker 28s linear infinite; font-family: var(--pixel); font-size: 20px; letter-spacing: 2px; white-space: nowrap; }
+    .ticker span::before { content: "■"; color: var(--lime); margin-right: 14px; text-shadow: 0 0 8px var(--lime); }
+    @keyframes ticker { to { transform: translateX(-50%); } }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; perspective: 900px; }
+    .card { position: relative; padding: 24px 22px; background: var(--panel); border: 2px solid #000; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .12s; transform-style: preserve-3d; }
+    .card::before { content: ""; position: absolute; inset: -2px; padding: 2px; background: conic-gradient(from var(--angle), transparent 0 60%, var(--cyan), var(--violet), transparent 85%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: orbit 5s linear infinite; opacity: .55; transition: opacity .3s; }
+    .card:hover::before { opacity: 1; }
+    @keyframes orbit { to { --angle: 360deg; } }
+    .card svg { width: 56px; height: 56px; image-rendering: pixelated; filter: drop-shadow(0 0 10px rgba(63, 247, 255, .5)); transform: translateZ(30px); }
+    .card h3 { font-size: 22px; font-weight: 400; margin: 14px 0 6px; transform: translateZ(20px); }
+    .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+    .monitor { position: relative; padding: 14px; background: #0d0a19; border: 3px solid #000; box-shadow: 0 0 0 2px var(--line), 0 30px 80px rgba(155, 92, 255, .3), 0 0 60px rgba(63, 247, 255, .12); transform: perspective(1400px) rotateX(var(--tilt, 8deg)); transition: transform .2s; }
+    .screen { position: relative; aspect-ratio: 1104 / 681; overflow: hidden; background: #000; }
+    .screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0 0 100% 0); }
+    .screen img.on { animation: wipe .9s steps(12) forwards; z-index: 1; }
+    .screen img.was { clip-path: inset(0); }
+    @keyframes wipe { to { clip-path: inset(0); } }
+    .screen::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 2px, transparent 2px 4px); mix-blend-mode: multiply; }
+    .thumbs { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+    .thumbs button { font-family: var(--pixel); font-size: 15px; color: var(--muted); background: #15112a; border: 2px solid #000; padding: 8px 14px; cursor: pointer; }
+    .thumbs button[aria-pressed=true] { color: #fff; background: var(--violet); box-shadow: 0 0 16px rgba(155, 92, 255, .6); }
+
+    .split { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center; }
+    .term { background: #05040a; border: 2px solid #000; box-shadow: 0 0 0 2px rgba(63, 247, 255, .35), 0 0 40px rgba(63, 247, 255, .15); font: 15px/1.7 Consolas, monospace; }
+    .term header { display: flex; gap: 6px; padding: 10px 12px; background: #120e22; border-bottom: 2px solid #000; }
+    .term header i { width: 12px; height: 12px; background: var(--violet); }
+    .term header i:nth-child(2) { background: var(--cyan); }
+    .term header i:nth-child(3) { background: var(--lime); }
+    .term ol { list-style: none; margin: 0; padding: 18px 20px; min-height: 260px; }
+    .term li { white-space: pre-wrap; opacity: 0; }
+    .term.in li { animation: typein .5s steps(14) forwards; animation-delay: calc(var(--i) * .55s + .2s); }
+    @keyframes typein { from { opacity: 1; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0); } }
+    .term .ok { color: var(--lime); }
+    .term .k { color: var(--cyan); }
+    .term .c { color: #6c6590; }
+
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: step; position: relative; }
+    .steps::before { content: ""; position: absolute; top: 34px; left: 6%; right: 6%; height: 4px; background: #1b1530; }
+    .steps::after { content: ""; position: absolute; top: 34px; left: 6%; height: 4px; width: 0; background: linear-gradient(90deg, var(--lime), var(--cyan)); box-shadow: 0 0 14px var(--cyan); transition: width 1.6s steps(20); }
+    .steps.in::after { width: 88%; }
+    .step { position: relative; z-index: 1; text-align: center; padding: 0 6px; }
+    .step b { display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 14px; font-family: var(--pixel); font-size: 32px; font-weight: 400; background: url(umbra.png) 0 0 / 100% 100%; image-rendering: pixelated; border: 3px solid #000; box-shadow: inset 0 0 0 2px var(--violet), 0 0 24px rgba(155, 92, 255, .5); }
+    .step p { margin: 0; color: var(--muted); font-size: 15.5px; overflow-wrap: anywhere; }
+    .step strong { color: var(--ink); }
+    .note { margin-top: 30px; color: var(--muted); font-size: 15px; }
+
+    .final { text-align: center; padding-top: 60px; }
+    .final h2 { font-size: clamp(40px, 7vw, 84px); }
+    .final .btn { font-size: 24px; padding: 18px 36px; }
+
+    footer { max-width: 1180px; margin: 0 auto; padding: 40px clamp(16px, 4vw, 40px) 70px; color: #7d7799; font-size: 14px; border-top: 1px solid var(--line); }
+    footer strong { color: #ffd83d; font-family: var(--pixel); font-weight: 400; }
+
+    /* Sections build up block by block as they scroll in. */
+    /* Hidden only once the script runs, so the page still reads without JavaScript. */
+    .js [data-reveal] { opacity: 0; }
+    .js [data-reveal].in { animation: build .9s steps(10) forwards; }
+    @keyframes build { from { opacity: 1; clip-path: inset(0 0 100% 0); transform: translateY(30px); } to { opacity: 1; clip-path: inset(-60px); transform: none; } }
+
+    @media (max-width: 900px) {
+      .hero, .split { grid-template-columns: 1fr; }
+      .scene { height: 380px; }
+      nav { display: none; }
+      .steps { grid-template-columns: 1fr 1fr; row-gap: 34px; }
+      .steps::before, .steps::after { display: none; }
+    }
+    @media (max-width: 520px) {
+      .topbar .btn { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      .lang { margin-left: auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .js [data-reveal] { opacity: 1; }
+      .screen img.on { clip-path: none; }
+      .term li { opacity: 1; }
+    }
   </style>
 </head>
 <body>
-  <header>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="floor" aria-hidden="true"></div>
+  <div id="xp" aria-hidden="true"><i></i></div>
+
+  <header class="topbar">
+    <a class="brand" href="#top"><img src="cesped.png" alt="">UMBRAL</a>
+    <nav>
+      <a href="#funciones"><span lang="en">Features</span><span lang="es">Funciones</span></a>
+      <a href="#capturas"><span lang="en">Screenshots</span><span lang="es">Capturas</span></a>
+      <a href="#seguridad"><span lang="en">Security</span><span lang="es">Seguridad</span></a>
+      <a href="#instalar"><span lang="en">Install</span><span lang="es">Instalar</span></a>
+    </nav>
     <div class="lang">
-      <button type="button" data-lang="en" aria-pressed="true">English</button>
-      <button type="button" data-lang="es" aria-pressed="false">Español</button>
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false">ES</button>
     </div>
-    <h1>Umbral Launcher</h1>
-    <p class="tagline" lang="en">A free, unofficial launcher for Minecraft: Java Edition, made to be easy to understand.</p>
-    <p class="tagline" lang="es">Un launcher gratuito y no oficial para Minecraft: Java Edition, hecho para que se entienda.</p>
-    <div class="download">
-      <a class="btn primary big" href="https://github.com/lautaroleuchuk6-cmd/umbral-launcher/releases/latest/download/UmbralLauncher-Setup.exe"><span lang="en">Download for Windows</span><span lang="es">Descargar para Windows</span></a>
-      <p class="small" lang="en">Early version 0.1.0 · Windows 10 and 11 (64-bit) · 117 MB</p>
-      <p class="small" lang="es">Versión temprana 0.1.0 · Windows 10 y 11 (64 bits) · 117 MB</p>
-    </div>
+    <a class="btn small" href="#instalar"><span lang="en">Download</span><span lang="es">Descargar</span></a>
   </header>
 
-  <main>
-    <section class="legal">
-      <strong lang="en">NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</strong>
-      <strong lang="es">NO ES UN PRODUCTO OFICIAL DE MINECRAFT. NO ESTÁ APROBADO POR MOJANG NI MICROSOFT, NI ASOCIADO CON ELLOS.</strong>
-      <p class="muted" lang="en">Umbral Launcher is an independent, non-commercial hobby project. You need to own Minecraft: Java Edition to play. The launcher does not include or redistribute any game files: they are downloaded from Mojang's official servers.</p>
-      <p class="muted" lang="es">Umbral Launcher es un proyecto personal, independiente y sin fines comerciales. Para jugar necesitás tener comprado Minecraft: Java Edition. El launcher no incluye ni redistribuye archivos del juego: se descargan de los servidores oficiales de Mojang.</p>
+  <main id="top">
+    <div class="hero">
+      <div>
+        <span class="chip pixel">MINECRAFT: JAVA EDITION · LAUNCHER</span>
+        <h1 aria-label="Umbral"><span class="word" aria-hidden="true"></span></h1>
+        <div class="sub-title">LAUNCHER</div>
+        <p class="lead" lang="en">Cross the threshold. Sign in, pick a version, add mods and shaders, and play — without fighting Java, folders or broken installs.</p>
+        <p class="lead" lang="es">Cruzá el umbral. Iniciá sesión, elegí la versión, sumá mods y shaders, y jugá — sin pelearte con Java, carpetas ni instalaciones rotas.</p>
+        <div class="cta">
+          <a class="btn" data-download href="#">
+            <svg class="dl-icon" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#fff" d="M3 0h2v4h2v1H6v1H5v1H3V6H2V5H1V4h2zM0 7h8v1H0z"/></svg>
+            <span lang="en">Download for Windows</span><span lang="es">Descargar para Windows</span>
+          </a>
+          <a class="btn ghost" href="#funciones"><span lang="en">See what it does</span><span lang="es">Ver qué hace</span></a>
+        </div>
+        <p class="meta" lang="en">Free · Early version <span data-version></span> · Windows 10 and 11 (64-bit) · <span data-size></span></p>
+        <p class="meta" lang="es">Gratis · Versión temprana <span data-version></span> · Windows 10 y 11 (64 bits) · <span data-size></span></p>
+      </div>
+      <div class="scene" id="scene" aria-hidden="true">
+        <div class="world" id="world">
+          <div class="frame" id="frame"><canvas id="rift" width="20" height="30"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legal">
+      <div>
+        <strong lang="en">NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</strong>
+        <strong lang="es">NO ES UN PRODUCTO OFICIAL DE MINECRAFT. NO ESTÁ APROBADO POR MOJANG NI MICROSOFT, NI ASOCIADO CON ELLOS.</strong>
+        <p lang="en">Umbral Launcher is an independent, non-commercial project. You need to own Minecraft: Java Edition. Game files are downloaded from Mojang's official servers; nothing is redistributed.</p>
+        <p lang="es">Umbral Launcher es un proyecto independiente y sin fines comerciales. Necesitás tener comprado Minecraft: Java Edition. Los archivos del juego se descargan de los servidores oficiales de Mojang; no se redistribuye nada.</p>
+      </div>
+    </div>
+
+    <section class="ticker" aria-hidden="true">
+      <div>
+        <span>Microsoft</span><span>Fabric</span><span>NeoForge</span><span>Modrinth</span><span>Iris</span><span>Java</span><span>26.3</span><span>1.21.1</span><span>Shaders</span><span>Backups</span>
+        <span>Microsoft</span><span>Fabric</span><span>NeoForge</span><span>Modrinth</span><span>Iris</span><span>Java</span><span>26.3</span><span>1.21.1</span><span>Shaders</span><span>Backups</span>
+      </div>
+    </section>
+
+    <section id="funciones">
+      <div data-reveal>
+        <span class="kicker" lang="en">Features</span><span class="kicker" lang="es">Funciones</span>
+        <h2 lang="en">Everything ready, nothing to configure</h2>
+        <h2 lang="es">Todo listo, nada que configurar</h2>
+        <p class="intro" lang="en">Made for people who just want to play: plain words, one button for each thing, and your worlds protected.</p>
+        <p class="intro" lang="es">Hecho para quien solo quiere jugar: palabras claras, un botón para cada cosa y tus mundos protegidos.</p>
+      </div>
+      <div class="cards">
+        <article class="card" data-reveal data-tilt>
+          <svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#9b5cff" d="M0 5h4v3H0z"/><path fill="#3ff7ff" d="M4 5h4v3H4z"/><path fill="#7cff4f" d="M2 1h4v4H2z"/><path fill="#000" opacity=".35" d="M2 4h4v1H2zM0 7h8v1H0z"/></svg>
+          <h3 lang="en">Separate profiles</h3><h3 lang="es">Perfiles separados</h3>
+          <p lang="en">Each one has its own version, mods and worlds. Your modded game never breaks your vanilla one.</p>
+          <p lang="es">Cada uno con su versión, mods y mundos. Tu juego con mods nunca rompe el normal.</p>
+        </article>
+        <article class="card" data-reveal data-tilt>
+          <svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3ff7ff" d="M3 0h2v4h2v1H6v1H5v1H3V6H2V5H1V4h2z"/><path fill="#7cff4f" d="M0 7h8v1H0z"/></svg>
+          <h3 lang="en">Installs itself</h3><h3 lang="es">Se instala solo</h3>
+          <p lang="en">The game, the right Java and Fabric or NeoForge are downloaded for you, from official sources.</p>
+          <p lang="es">El juego, el Java correcto y Fabric o NeoForge se descargan solos, de fuentes oficiales.</p>
+        </article>
+        <article class="card" data-reveal data-tilt>
+          <svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#ffd83d" d="M3 0h2v1H3zM3 7h2v1H3zM0 3h1v2H0zM7 3h1v2H7zM1 1h1v1H1zM6 1h1v1H6zM1 6h1v1H1zM6 6h1v1H6z"/><path fill="#ffb02e" d="M2 2h4v4H2z"/><path fill="#fff3a0" d="M3 3h2v2H3z"/></svg>
+          <h3 lang="en">Mods, shaders, textures</h3><h3 lang="es">Mods, shaders y texturas</h3>
+          <p lang="en">Search Modrinth and install with one click. Dependencies come along, and Iris is added with your first shader.</p>
+          <p lang="es">Buscás en Modrinth e instalás con un clic. Las dependencias vienen solas, e Iris se suma con tu primer shader.</p>
+        </article>
+        <article class="card" data-reveal data-tilt>
+          <svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#8a5a2b" d="M0 2h8v6H0z"/><path fill="#5c3a1a" d="M0 4h8v1H0z"/><path fill="#c9c9c9" d="M3 3h2v3H3z"/><path fill="#7cff4f" d="M3 0h2v2H3z"/></svg>
+          <h3 lang="en">Worlds backed up</h3><h3 lang="es">Mundos con copia</h3>
+          <p lang="en">Every world you play is saved when the game closes. Restoring never overwrites what you have.</p>
+          <p lang="es">Cada mundo que jugás se copia al cerrar el juego. Restaurar nunca pisa lo que tenés.</p>
+        </article>
+        <article class="card" data-reveal data-tilt>
+          <svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#2c2142" d="M0 0h8v8H0z"/><path fill="#9b5cff" d="M2 1h4v6H2z"/><path fill="#3ff7ff" d="M3 2h2v4H3z"/></svg>
+          <h3 lang="en">Bring your game</h3><h3 lang="es">Traé lo tuyo</h3>
+          <p lang="en">Copies worlds, mods and settings from the official launcher or Prism. The originals stay untouched.</p>
+          <p lang="es">Copia mundos, mods y opciones del launcher oficial o de Prism. Los originales quedan intactos.</p>
+        </article>
+        <article class="card" data-reveal data-tilt>
+          <svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#ff3f6c" d="M1 1h2v1h2V1h2v1h1v3H7v1H6v1H5v1H3V7H2V6H1V5H0V2h1z"/><path fill="#fff" d="M3 3h2v1H3z"/></svg>
+          <h3 lang="en">Crashes explained</h3><h3 lang="es">Errores explicados</h3>
+          <p lang="en">If the game closes, known causes are explained in plain words — and a missing mod can be installed in one click.</p>
+          <p lang="es">Si el juego se cierra, las causas conocidas se explican en palabras simples, y un mod que falta se instala con un clic.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="capturas">
+      <div data-reveal>
+        <span class="kicker" lang="en">Screenshots</span><span class="kicker" lang="es">Capturas</span>
+        <h2 lang="en">Blocky, dark and clear</h2>
+        <h2 lang="es">De bloques, oscuro y claro</h2>
+        <p class="intro" lang="en">The interface is in Spanish, built with the project's own textures and an open-licensed pixel font.</p>
+        <p class="intro" lang="es">La interfaz usa texturas propias del proyecto y una tipografía pixelada de licencia abierta.</p>
+      </div>
+      <div class="monitor" data-reveal id="monitor">
+        <div class="screen" id="screen">
+          <img src="inicio.png" width="1104" height="681" alt="Home screen with three first steps: sign in, create a profile, play." class="on">
+          <img src="shaders.png" width="1104" height="681" alt="Mods and shaders screen: shader packs from Modrinth, each with an install button.">
+          <img src="sesion.png" width="1104" height="681" alt="Sign-in screen explaining that the password is only typed on Microsoft's page.">
+          <img src="perfil.png" width="1104" height="681" alt="New profile screen: name, Minecraft version and whether to use mods.">
+        </div>
+      </div>
+      <div class="thumbs" id="thumbs">
+        <button type="button" aria-pressed="true"><span lang="en">Home</span><span lang="es">Inicio</span></button>
+        <button type="button" aria-pressed="false"><span lang="en">Shaders</span><span lang="es">Shaders</span></button>
+        <button type="button" aria-pressed="false"><span lang="en">Sign in</span><span lang="es">Iniciar sesión</span></button>
+        <button type="button" aria-pressed="false"><span lang="en">New profile</span><span lang="es">Perfil nuevo</span></button>
+      </div>
+    </section>
+
+    <section id="seguridad">
+      <div class="split">
+        <div data-reveal>
+          <span class="kicker" lang="en">Security</span><span class="kicker" lang="es">Seguridad</span>
+          <h2 lang="en">Your password never touches the launcher</h2>
+          <h2 lang="es">Tu contraseña nunca pasa por el launcher</h2>
+          <p class="intro" lang="en">Sign-in happens on Microsoft's own page, in your browser, with the standard OAuth flow. The launcher only receives permission to start the game, stored encrypted for your Windows user.</p>
+          <p class="intro" lang="es">El inicio de sesión ocurre en la página de Microsoft, en tu navegador, con el método estándar OAuth. El launcher solo recibe un permiso para abrir el juego, guardado cifrado para tu usuario de Windows.</p>
+        </div>
+        <div class="term" data-reveal data-term>
+          <header aria-hidden="true"><i></i><i></i><i></i></header>
+          <ol lang="en">
+            <li style="--i:0"><span class="k">&gt;</span> open browser → <span class="k">login.microsoftonline.com</span></li>
+            <li style="--i:1"><span class="c"># password typed on Microsoft's page</span></li>
+            <li style="--i:2"><span class="ok">✓</span> Microsoft account</li>
+            <li style="--i:3"><span class="ok">✓</span> Xbox Live</li>
+            <li style="--i:4"><span class="ok">✓</span> owns Minecraft: Java Edition</li>
+            <li style="--i:5"><span class="ok">✓</span> session encrypted for this Windows user</li>
+            <li style="--i:6"><span class="k">&gt;</span> ready to play_</li>
+          </ol>
+          <ol lang="es">
+            <li style="--i:0"><span class="k">&gt;</span> abrir navegador → <span class="k">login.microsoftonline.com</span></li>
+            <li style="--i:1"><span class="c"># la contraseña se escribe en la página de Microsoft</span></li>
+            <li style="--i:2"><span class="ok">✓</span> cuenta de Microsoft</li>
+            <li style="--i:3"><span class="ok">✓</span> Xbox Live</li>
+            <li style="--i:4"><span class="ok">✓</span> tiene Minecraft: Java Edition</li>
+            <li style="--i:5"><span class="ok">✓</span> sesión cifrada para tu usuario de Windows</li>
+            <li style="--i:6"><span class="k">&gt;</span> listo para jugar_</li>
+          </ol>
+        </div>
+      </div>
     </section>
 
     <section id="instalar">
-      <h2 lang="en">How to install</h2>
-      <h2 lang="es">Cómo instalarlo</h2>
-      <ol lang="en">
-        <li>Download <code>UmbralLauncher-Setup.exe</code> with the button above and open it.</li>
-        <li>Windows may show <b>"Windows protected your PC"</b>. That happens because the installer is not digitally signed, which costs money every year. Click <b>More info</b> and then <b>Run anyway</b>.</li>
-        <li>Follow the installer. It creates an <b>Umbral Launcher</b> shortcut on your desktop.</li>
-        <li>Open it, sign in with the Microsoft account that owns Minecraft: Java Edition, create a profile and press <b>Play</b>. The first launch downloads the game, so it takes a few minutes.</li>
-      </ol>
-      <ol lang="es">
-        <li>Descargá <code>UmbralLauncher-Setup.exe</code> con el botón de arriba y abrilo.</li>
-        <li>Puede aparecer <b>"Windows protegió su PC"</b>. Pasa porque el instalador no tiene firma digital, que cuesta dinero todos los años. Tocá <b>Más información</b> y después <b>Ejecutar de todas formas</b>.</li>
-        <li>Seguí los pasos del instalador. Te deja un acceso directo <b>Umbral Launcher</b> en el escritorio.</li>
-        <li>Abrilo, iniciá sesión con la cuenta de Microsoft que tiene Minecraft: Java Edition, creá un perfil y tocá <b>Jugar</b>. La primera vez descarga el juego, así que tarda unos minutos.</li>
-      </ol>
-      <p class="muted" lang="en">To update, download the new version and install it over the old one: profiles, worlds and mods are kept. The launcher tells you when there is a new version.</p>
-      <p class="muted" lang="es">Para actualizar, bajá la versión nueva e instalala encima: se conservan los perfiles, mundos y mods. El launcher te avisa cuando hay una versión nueva.</p>
-    </section>
-
-    <section>
-      <h2 lang="en">What it does</h2>
-      <h2 lang="es">Qué hace</h2>
-      <div class="grid">
-        <div>
-          <h3 lang="en">Separate profiles</h3><h3 lang="es">Perfiles separados</h3>
-          <p lang="en">Each profile has its own Minecraft version, mods and worlds, so a modded game never breaks a vanilla one.</p>
-          <p lang="es">Cada perfil tiene su versión de Minecraft, sus mods y sus mundos, para que un juego con mods no rompa el normal.</p>
-        </div>
-        <div>
-          <h3 lang="en">Everything installs itself</h3><h3 lang="es">Todo se instala solo</h3>
-          <p lang="en">Downloads the game, the right Java version, and Fabric or NeoForge when a profile uses mods.</p>
-          <p lang="es">Descarga el juego, la versión correcta de Java, y Fabric o NeoForge cuando el perfil usa mods.</p>
-        </div>
-        <div>
-          <h3 lang="en">Mods, shaders and textures</h3><h3 lang="es">Mods, shaders y texturas</h3>
-          <p lang="en">From Modrinth, filtered to what works with the profile. Dependencies are installed too, and Iris comes with the first shader.</p>
-          <p lang="es">Desde Modrinth, filtrados para que funcionen con el perfil. Las dependencias se instalan solas, e Iris viene con el primer shader.</p>
-        </div>
-        <div>
-          <h3 lang="en">Automatic world backups</h3><h3 lang="es">Copias automáticas de mundos</h3>
-          <p lang="en">Worlds you played are backed up when the game closes. Restoring never overwrites the current world.</p>
-          <p lang="es">Al cerrar el juego se guarda una copia de los mundos jugados. Restaurar nunca pisa el mundo actual.</p>
-        </div>
-        <div>
-          <h3 lang="en">Bring your existing game</h3><h3 lang="es">Traé lo que ya tenías</h3>
-          <p lang="en">Copies worlds, mods and options from the official launcher or Prism into a new profile, leaving the originals untouched.</p>
-          <p lang="es">Copia mundos, mods y opciones del launcher oficial o de Prism a un perfil nuevo, sin tocar los originales.</p>
-        </div>
-        <div>
-          <h3 lang="en">Plain-language crash help</h3><h3 lang="es">Errores explicados</h3>
-          <p lang="en">When the game crashes, known causes such as a missing dependency are explained and can be fixed in one click.</p>
-          <p lang="es">Si el juego se cierra, las causas conocidas (como un mod que falta) se explican y se arreglan con un clic.</p>
-        </div>
+      <div data-reveal>
+        <span class="kicker" lang="en">Install</span><span class="kicker" lang="es">Instalar</span>
+        <h2 lang="en">Four steps to the other side</h2>
+        <h2 lang="es">Cuatro pasos al otro lado</h2>
       </div>
-    </section>
-
-    <section>
-      <h2 lang="en">How sign-in works</h2>
-      <h2 lang="es">Cómo funciona el inicio de sesión</h2>
-      <ul lang="en">
-        <li>Sign-in uses the standard Microsoft OAuth 2.0 authorization code flow with PKCE, in your own web browser.</li>
-        <li>Your password is typed on Microsoft's page only. The launcher never sees it.</li>
-        <li>The launcher checks that the account owns Minecraft: Java Edition before allowing play. There is no offline or cracked mode.</li>
-        <li>The session token is stored encrypted on your computer using the operating system's protected storage, and is removed when you sign out.</li>
-        <li>No account data is sent anywhere other than Microsoft, Xbox Live and Minecraft Services.</li>
-      </ul>
-      <ul lang="es">
-        <li>El inicio de sesión usa el flujo estándar de Microsoft (OAuth 2.0 con código de autorización y PKCE), en tu propio navegador.</li>
-        <li>La contraseña se escribe únicamente en la página de Microsoft. El launcher nunca la ve.</li>
-        <li>El launcher comprueba que la cuenta tenga Minecraft: Java Edition antes de dejar jugar. No hay modo sin conexión ni modo pirata.</li>
-        <li>El permiso de sesión se guarda cifrado en tu computadora con el almacenamiento protegido del sistema, y se borra al cerrar sesión.</li>
-        <li>Los datos de la cuenta no se envían a ningún lugar que no sea Microsoft, Xbox Live y Minecraft Services.</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2 lang="en">Screenshots</h2>
-      <h2 lang="es">Capturas</h2>
-      <p class="muted" lang="en">The interface is currently in Spanish. The blocky look uses the project's own textures and an open-licensed font; no Mojang assets are used.</p>
-      <p class="muted" lang="es">El estilo de bloques usa texturas propias del proyecto y una tipografía de licencia abierta; no se usan recursos de Mojang.</p>
-      <div class="shots">
-        <figure><img src="inicio.png" width="1104" height="681" alt="Home screen with a three-step getting started list: sign in, create a profile, play.">
-          <figcaption lang="en">Home: three first steps</figcaption><figcaption lang="es">Inicio: tres primeros pasos</figcaption></figure>
-        <figure><img src="sesion.png" width="1104" height="681" alt="Sign-in dialog listing how the Microsoft sign-in keeps the password out of the launcher.">
-          <figcaption lang="en">Sign-in explained before it starts</figcaption><figcaption lang="es">El inicio de sesión, explicado antes de empezar</figcaption></figure>
-        <figure><img src="perfil.png" width="1104" height="681" alt="New profile dialog asking for a name, a Minecraft version and whether to use mods.">
-          <figcaption lang="en">Creating a profile</figcaption><figcaption lang="es">Crear un perfil</figcaption></figure>
+      <div class="steps" data-steps>
+        <div class="step"><b>1</b>
+          <p lang="en"><strong>Download</strong> <code>UmbralLauncher-Setup.exe</code> and open it.</p>
+          <p lang="es"><strong>Descargá</strong> <code>UmbralLauncher-Setup.exe</code> y abrilo.</p></div>
+        <div class="step"><b>2</b>
+          <p lang="en">If you see <strong>"Windows protected your PC"</strong>, click <strong>More info → Run anyway</strong>. The installer isn't code-signed.</p>
+          <p lang="es">Si ves <strong>"Windows protegió su PC"</strong>, tocá <strong>Más información → Ejecutar de todas formas</strong>. El instalador no tiene firma digital.</p></div>
+        <div class="step"><b>3</b>
+          <p lang="en"><strong>Sign in</strong> with the Microsoft account that owns Minecraft: Java Edition.</p>
+          <p lang="es"><strong>Iniciá sesión</strong> con la cuenta de Microsoft que tiene Minecraft: Java Edition.</p></div>
+        <div class="step"><b>4</b>
+          <p lang="en"><strong>Create a profile and play.</strong> The first launch downloads the game.</p>
+          <p lang="es"><strong>Creá un perfil y jugá.</strong> La primera vez descarga el juego.</p></div>
       </div>
+      <p class="note" lang="en">To update, install the new version over the old one: profiles, worlds and mods are kept. The launcher tells you when there is one.</p>
+      <p class="note" lang="es">Para actualizar, instalá la versión nueva encima: se conservan perfiles, mundos y mods. El launcher te avisa cuando hay una.</p>
     </section>
 
-    <section>
-      <h2 lang="en">How it is built</h2>
-      <h2 lang="es">Cómo está hecho</h2>
-      <p lang="en">Umbral Launcher is built with Electron and TypeScript, and uses the MIT-licensed <a href="https://github.com/Voxelum/minecraft-launcher-core-node">@xmcl</a> libraries to install and start the game. Mods are fetched through the public <a href="https://docs.modrinth.com/">Modrinth API</a>.</p>
-      <p lang="es">Umbral Launcher está hecho con Electron y TypeScript, y usa las librerías <a href="https://github.com/Voxelum/minecraft-launcher-core-node">@xmcl</a> (licencia MIT) para instalar e iniciar el juego. Los mods se obtienen a través de la <a href="https://docs.modrinth.com/">API pública de Modrinth</a>.</p>
+    <section class="final" data-reveal>
+      <h2 lang="en">Cross the threshold</h2>
+      <h2 lang="es">Cruzá el umbral</h2>
+      <a class="btn" data-download href="#">
+        <svg class="dl-icon" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path fill="#fff" d="M3 0h2v4h2v1H6v1H5v1H3V6H2V5H1V4h2zM0 7h8v1H0z"/></svg>
+        <span lang="en">Download Umbral Launcher</span><span lang="es">Descargar Umbral Launcher</span>
+      </a>
     </section>
   </main>
 
   <footer>
-    <span lang="en">Minecraft is a trademark of Mojang Synergies AB. This project is not affiliated with Mojang or Microsoft.</span>
-    <span lang="es">Minecraft es una marca de Mojang Synergies AB. Este proyecto no está afiliado a Mojang ni a Microsoft.</span>
+    <p><strong lang="en">NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</strong><strong lang="es">NO ES UN PRODUCTO OFICIAL DE MINECRAFT. NO ESTÁ APROBADO POR MOJANG NI MICROSOFT, NI ASOCIADO CON ELLOS.</strong></p>
+    <p lang="en">Minecraft is a trademark of Mojang Synergies AB. Built with Electron, TypeScript and the MIT-licensed <a href="https://github.com/Voxelum/minecraft-launcher-core-node">@xmcl</a> libraries. Mods come from <a href="https://modrinth.com">Modrinth</a>. Font: Pixelify Sans (SIL Open Font License).</p>
+    <p lang="es">Minecraft es una marca de Mojang Synergies AB. Hecho con Electron, TypeScript y las librerías <a href="https://github.com/Voxelum/minecraft-launcher-core-node">@xmcl</a> (licencia MIT). Los mods vienen de <a href="https://modrinth.com">Modrinth</a>. Tipografía: Pixelify Sans (SIL Open Font License).</p>
   </footer>
 
   <script>
-    const buttons = document.querySelectorAll('.lang button')
+    const RELEASE = { version: '0.1.0', size: '117 MB', url: 'https://github.com/lautaroleuchuk6-cmd/umbral-launcher/releases/latest/download/UmbralLauncher-Setup.exe' }
+    document.documentElement.classList.add('js')
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const $ = (s) => document.querySelector(s)
+
+    for (const a of document.querySelectorAll('[data-download]')) a.href = RELEASE.url
+    for (const s of document.querySelectorAll('[data-version]')) s.textContent = RELEASE.version
+    for (const s of document.querySelectorAll('[data-size]')) s.textContent = RELEASE.size
+
+    // Language
+    const langButtons = document.querySelectorAll('.lang button')
     function setLanguage(lang) {
       document.documentElement.classList.toggle('es', lang === 'es')
       document.documentElement.lang = lang
-      for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.lang === lang))
+      for (const b of langButtons) b.setAttribute('aria-pressed', String(b.dataset.lang === lang))
     }
-    for (const b of buttons) b.addEventListener('click', () => setLanguage(b.dataset.lang))
+    for (const b of langButtons) b.addEventListener('click', () => setLanguage(b.dataset.lang))
     if (navigator.language.startsWith('es')) setLanguage('es')
+
+    // Title letters drop in one by one
+    const word = $('h1 .word')
+    ;[...'UMBRAL'].forEach((c, i) => { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; s.style.setProperty('--i', i); word.append(s) })
+
+    // Portal: a 4x5 frame of blocks with the rift inside, plus floating blocks around it
+    function cube(cls, x, y) {
+      const c = document.createElement('div')
+      c.className = 'cube ' + cls
+      c.style.setProperty('--x', x)
+      c.style.setProperty('--y', y)
+      for (let i = 0; i < 6; i++) c.append(document.createElement('i'))
+      return c
+    }
+    const frame = $('#frame')
+    for (let y = 0; y < 5; y++) for (let x = 0; x < 4; x++) if (x === 0 || x === 3 || y === 0 || y === 4) frame.append(cube('', x, y))
+    const floaters = [
+      ['grass', '-2.6', '0.6', '-80', 7, 0, 16], ['stone', '4.8', '-0.2', '-40', 6, 1.2, 12],
+      ['ore', '5.2', '3.6', '60', 8, .6, 18], ['grass', '-2.2', '4.1', '90', 6.5, 2, 14], ['stone', '1.3', '-1.9', '-140', 7.5, 1.6, 20],
+    ]
+    for (const [cls, x, y, z, t, d, r] of floaters) {
+      const f = document.createElement('div')
+      f.className = 'floater'
+      f.style.cssText = `left:calc(${x} * var(--s));top:calc(${y} * var(--s));transform:translateZ(${z}px) scale(.8);--t:${t}s;--d:${d}s;--r:${r}s`
+      f.append(cube(cls, 0, 0))
+      $('#world').append(f)
+    }
+
+    // Rift: a tiny canvas drawn as a swirling vortex and scaled up with hard pixels
+    const rift = $('#rift'), rctx = rift.getContext('2d')
+    const palette = [[11, 6, 32], [42, 15, 92], [90, 32, 184], [138, 77, 255], [63, 247, 255], [233, 255, 255]]
+    const img = rctx.createImageData(rift.width, rift.height)
+    function drawRift(t) {
+      const w = rift.width, h = rift.height
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        const nx = (x - w / 2 + .5) / (w / 2), ny = (y - h / 2 + .5) / (h / 2)
+        const r = Math.hypot(nx * .9, ny * .6), a = Math.atan2(ny, nx)
+        let v = Math.sin(a * 3 + r * 9 - t * 2.2) * .5 + Math.sin(r * 14 - t * 3.1 + Math.sin(a * 2 + t)) * .35 + (1 - r) * .9
+        v = Math.max(0, Math.min(.999, (v + .4) / 1.9))
+        const c = palette[Math.floor(v * palette.length)], o = (y * w + x) * 4
+        img.data[o] = c[0]; img.data[o + 1] = c[1]; img.data[o + 2] = c[2]; img.data[o + 3] = 255
+      }
+      rctx.putImageData(img, 0, 0)
+    }
+
+    // Sky: low-resolution canvas of twinkling stars and rising orbs, scaled up pixelated
+    const sky = $('#sky'), sctx = sky.getContext('2d')
+    const SCALE = 4
+    let stars = [], orbs = []
+    function resizeSky() {
+      sky.width = Math.ceil(innerWidth / SCALE); sky.height = Math.ceil(innerHeight / SCALE)
+      stars = Array.from({ length: Math.round(sky.width * sky.height / 140) }, () => ({ x: Math.random() * sky.width | 0, y: Math.random() * sky.height | 0, p: Math.random() * 6 }))
+      orbs = Array.from({ length: 34 }, newOrb)
+    }
+    function newOrb() {
+      const colors = ['#7cff4f', '#3ff7ff', '#9b5cff', '#c8ff4f']
+      return { x: Math.random() * sky.width, y: sky.height + Math.random() * sky.height, v: .08 + Math.random() * .22, c: colors[Math.random() * colors.length | 0], s: Math.random() < .25 ? 2 : 1, w: Math.random() * 6 }
+    }
+    function drawSky(t) {
+      sctx.fillStyle = '#07060d'; sctx.fillRect(0, 0, sky.width, sky.height)
+      const g = sctx.createRadialGradient(sky.width * .7, sky.height * .35, 0, sky.width * .7, sky.height * .35, sky.width * .6)
+      g.addColorStop(0, 'rgba(90,32,184,.35)'); g.addColorStop(1, 'rgba(7,6,13,0)')
+      sctx.fillStyle = g; sctx.fillRect(0, 0, sky.width, sky.height)
+      for (const s of stars) { sctx.globalAlpha = .35 + .65 * Math.abs(Math.sin(t * .8 + s.p)); sctx.fillStyle = '#fff'; sctx.fillRect(s.x, s.y, 1, 1) }
+      sctx.globalAlpha = 1
+      for (const o of orbs) {
+        o.y -= o.v; o.x += Math.sin(t + o.w) * .05
+        if (o.y < -4) Object.assign(o, newOrb(), { y: sky.height + 2 })
+        sctx.globalAlpha = .25; sctx.fillStyle = o.c; sctx.fillRect(o.x - 1, o.y - 1, o.s + 2, o.s + 2)
+        sctx.globalAlpha = .95; sctx.fillRect(o.x, o.y, o.s, o.s)
+      }
+      sctx.globalAlpha = 1
+    }
+
+    resizeSky()
+    addEventListener('resize', resizeSky)
+    let spin = 0
+    function frameLoop(ms) {
+      const t = ms / 1000
+      drawSky(t); drawRift(t)
+      spin = Math.sin(t * .35) * 18
+      $('#world').style.setProperty('--spin', spin + 'deg')
+      if (!still) requestAnimationFrame(frameLoop)
+    }
+    requestAnimationFrame(frameLoop)
+
+    // The portal leans toward the mouse
+    const scene = $('#scene'), world = $('#world')
+    addEventListener('pointermove', (e) => {
+      world.style.setProperty('--mx', (e.clientX / innerWidth - .5).toFixed(3))
+      world.style.setProperty('--my', (e.clientY / innerHeight - .5).toFixed(3))
+    })
+
+    // Cards tilt under the pointer
+    for (const card of document.querySelectorAll('[data-tilt]')) {
+      card.addEventListener('pointermove', (e) => {
+        const r = card.getBoundingClientRect()
+        card.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 14 + 'deg')
+        card.style.setProperty('--rx', ((e.clientY - r.top) / r.height - .5) * -14 + 'deg')
+      })
+      card.addEventListener('pointerleave', () => { card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg') })
+    }
+
+    // Reveal sections, type the terminal and fill the install line when they scroll in.
+    // Checked on scroll rather than with IntersectionObserver, which some embedded views never deliver.
+    let pending = [...document.querySelectorAll('[data-reveal], [data-steps], [data-term]')]
+    pending.forEach((el, i) => { if (el.matches('.cards [data-reveal]')) el.style.animationDelay = (i % 3) * 120 + 'ms' })
+    function reveal() {
+      pending = pending.filter((el) => {
+        const r = el.getBoundingClientRect()
+        if (r.top < innerHeight * .9 && r.bottom > 0) { el.classList.add('in'); return false }
+        return true
+      })
+    }
+    addEventListener('scroll', reveal, { passive: true })
+    addEventListener('resize', reveal)
+    reveal()
+
+    // Experience-bar scroll progress and monitor tilt
+    const xp = $('#xp'), monitor = $('#monitor')
+    addEventListener('scroll', () => {
+      const max = document.documentElement.scrollHeight - innerHeight
+      xp.style.setProperty('--p', max > 0 ? scrollY / max : 0)
+      const r = monitor.getBoundingClientRect()
+      monitor.style.setProperty('--tilt', Math.max(0, Math.min(14, (r.top / innerHeight) * 18)) + 'deg')
+    }, { passive: true })
+
+    // Screenshot switcher with a block-by-block wipe, cycling on its own
+    const shots = [...document.querySelectorAll('#screen img')], thumbs = [...document.querySelectorAll('#thumbs button')]
+    let current = 0, timer
+    function show(i) {
+      if (i === current) return
+      shots.forEach((s) => s.classList.remove('was'))
+      shots[current].classList.replace('on', 'was')
+      shots[i].classList.add('on')
+      thumbs.forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)))
+      current = i
+    }
+    thumbs.forEach((b, i) => b.addEventListener('click', () => { show(i); clearInterval(timer) }))
+    if (!still) timer = setInterval(() => show((current + 1) % shots.length), 4500)
   </script>
 </body>
 </html>
