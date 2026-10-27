@@ -7,6 +7,11 @@
   <meta name="description" content="A free, unofficial launcher for Minecraft: Java Edition with Microsoft sign-in, separate profiles, mods and automatic world backups.">
   <style>
     @font-face { font-family: "Pixelify Sans"; font-weight: 400; src: url(pixelify-sans-latin-400-normal.woff2) format("woff2"); }
+    .download { margin-top: 22px; }
+    .download .small { margin: 10px 0 0; font-size: 15px; color: var(--muted); text-shadow: 2px 2px #000; }
+    .btn.big { display: inline-block; font-size: 24px; padding: 14px 34px; }
+    ol { margin: 0 0 12px; padding-left: 22px; }
+    code { background: #000; padding: 1px 6px; border: 1px solid var(--edge); }
     @font-face { font-family: "Pixelify Sans"; font-weight: 700; src: url(pixelify-sans-latin-700-normal.woff2) format("woff2"); }
     :root { --line: #000; --edge: #5a5a5a; --muted: #c9c9c9; --grass: #3c8527; --grass-light: #5db53f; --grass-dark: #26591a; --stone: #6e6e6e; --stone-light: #a8a8a8; --stone-dark: #4a4a4a; --warn: #ffd83d; }
     * { box-sizing: border-box; }
@@ -55,8 +60,11 @@
     <h1>Umbral Launcher</h1>
     <p class="tagline" lang="en">A free, unofficial launcher for Minecraft: Java Edition, made to be easy to understand.</p>
     <p class="tagline" lang="es">Un launcher gratuito y no oficial para Minecraft: Java Edition, hecho para que se entienda.</p>
-    <span class="badge" lang="en">In development — no public download yet</span>
-    <span class="badge" lang="es">En desarrollo — todavía sin descarga pública</span>
+    <div class="download">
+      <a class="btn primary big" href="https://github.com/lautaroleuchuk6-cmd/umbral-launcher/releases/latest/download/UmbralLauncher-Setup.exe"><span lang="en">Download for Windows</span><span lang="es">Descargar para Windows</span></a>
+      <p class="small" lang="en">Early version 0.1.0 · Windows 10 and 11 (64-bit) · 117 MB</p>
+      <p class="small" lang="es">Versión temprana 0.1.0 · Windows 10 y 11 (64 bits) · 117 MB</p>
+    </div>
   </header>
 
   <main>
@@ -65,6 +73,25 @@
       <strong lang="es">NO ES UN PRODUCTO OFICIAL DE MINECRAFT. NO ESTÁ APROBADO POR MOJANG NI MICROSOFT, NI ASOCIADO CON ELLOS.</strong>
       <p class="muted" lang="en">Umbral Launcher is an independent, non-commercial hobby project. You need to own Minecraft: Java Edition to play. The launcher does not include or redistribute any game files: they are downloaded from Mojang's official servers.</p>
       <p class="muted" lang="es">Umbral Launcher es un proyecto personal, independiente y sin fines comerciales. Para jugar necesitás tener comprado Minecraft: Java Edition. El launcher no incluye ni redistribuye archivos del juego: se descargan de los servidores oficiales de Mojang.</p>
+    </section>
+
+    <section id="instalar">
+      <h2 lang="en">How to install</h2>
+      <h2 lang="es">Cómo instalarlo</h2>
+      <ol lang="en">
+        <li>Download <code>UmbralLauncher-Setup.exe</code> with the button above and open it.</li>
+        <li>Windows may show <b>"Windows protected your PC"</b>. That happens because the installer is not digitally signed, which costs money every year. Click <b>More info</b> and then <b>Run anyway</b>.</li>
+        <li>Follow the installer. It creates an <b>Umbral Launcher</b> shortcut on your desktop.</li>
+        <li>Open it, sign in with the Microsoft account that owns Minecraft: Java Edition, create a profile and press <b>Play</b>. The first launch downloads the game, so it takes a few minutes.</li>
+      </ol>
+      <ol lang="es">
+        <li>Descargá <code>UmbralLauncher-Setup.exe</code> con el botón de arriba y abrilo.</li>
+        <li>Puede aparecer <b>"Windows protegió su PC"</b>. Pasa porque el instalador no tiene firma digital, que cuesta dinero todos los años. Tocá <b>Más información</b> y después <b>Ejecutar de todas formas</b>.</li>
+        <li>Seguí los pasos del instalador. Te deja un acceso directo <b>Umbral Launcher</b> en el escritorio.</li>
+        <li>Abrilo, iniciá sesión con la cuenta de Microsoft que tiene Minecraft: Java Edition, creá un perfil y tocá <b>Jugar</b>. La primera vez descarga el juego, así que tarda unos minutos.</li>
+      </ol>
+      <p class="muted" lang="en">To update, download the new version and install it over the old one: profiles, worlds and mods are kept. The launcher tells you when there is a new version.</p>
+      <p class="muted" lang="es">Para actualizar, bajá la versión nueva e instalala encima: se conservan los perfiles, mundos y mods. El launcher te avisa cuando hay una versión nueva.</p>
     </section>
 
     <section>
@@ -82,9 +109,9 @@
           <p lang="es">Descarga el juego, la versión correcta de Java, y Fabric o NeoForge cuando el perfil usa mods.</p>
         </div>
         <div>
-          <h3 lang="en">Mods from Modrinth</h3><h3 lang="es">Mods desde Modrinth</h3>
-          <p lang="en">Search shows only mods compatible with the profile, and required dependencies are installed with them.</p>
-          <p lang="es">La búsqueda muestra solo mods compatibles con el perfil, y las dependencias necesarias se instalan con ellos.</p>
+          <h3 lang="en">Mods, shaders and textures</h3><h3 lang="es">Mods, shaders y texturas</h3>
+          <p lang="en">From Modrinth, filtered to what works with the profile. Dependencies are installed too, and Iris comes with the first shader.</p>
+          <p lang="es">Desde Modrinth, filtrados para que funcionen con el perfil. Las dependencias se instalan solas, e Iris viene con el primer shader.</p>
         </div>
         <div>
           <h3 lang="en">Automatic world backups</h3><h3 lang="es">Copias automáticas de mundos</h3>
